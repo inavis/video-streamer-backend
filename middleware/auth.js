@@ -1,0 +1,21 @@
+var {response} = require('express')
+const jwt = require('jsonwebtoken');
+
+const auth = (request,reponse,next) =>{
+    console.log("auth")
+    const token = request.header("x-auth-token")
+    //console.log("token",token,process.env.SECRET);
+    //console.log("verify")
+    jwt.verify(token,process.env.SECRET,(err,decode)=>{
+        if(err)
+            return response.send({error:err})
+           // console.log(decode) // we will get _id used to generate token
+
+           //setting values and it can be used further
+           request.user = decode;
+           request.token = token;
+        next();
+    });
+}
+
+module.exports = {auth}
