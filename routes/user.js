@@ -35,6 +35,9 @@ router.post("/login",async(req,res)=>{
 
     //compare passwords
    user.comparePassword(req.body.password, (err,isMatch)=>{
+        if(err){
+        res.status(400).send({message:"Some error occured"})
+        }
         if(!isMatch){
             res.send({message:"Check your credentials again"})
         }
@@ -46,12 +49,20 @@ router.post("/login",async(req,res)=>{
             res.status(400).send({message:"Some error occured"})
         }
         console.log(userDetails.token)
-        res.cookie("x-auth-token",userDetails.token).status(200).send({message:"Login Success"})
+        res.status(200)
+        .send({message:"Login Success",user:{
+            id:userDetails._id,
+            name:userDetails.firstname+" "+userDetails.lastname,
+            role:userDetails.role,
+            email:userDetails.email,
+            token:userDetails.token
+        }})
     })
 })
 
 router.get("/logout",auth,(req,res)=>{
     //in auth we have set req.user,req.token
+    console.log("logout")
     console.log(req.user,req.token)
     User.findOneAndUpdate({_id:req.user},{token:""},(err,doc)=>{
         if(err)

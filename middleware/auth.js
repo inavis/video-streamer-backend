@@ -4,8 +4,7 @@ const jwt = require('jsonwebtoken');
 const auth = (request,reponse,next) =>{
     console.log("auth")
     const token = request.header("x-auth-token")
-    //console.log("token",token,process.env.SECRET);
-    //console.log("verify")
+
     jwt.verify(token,process.env.SECRET,(err,decode)=>{
         if(err)
             return response.send({error:err})
